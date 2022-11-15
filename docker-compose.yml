@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  api:
+    container_name: ngcash_api
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      - DB_HOST=db
+      - DB_USER=ngcash
+      - DB_PASSWORD=1234
+      - DB=ngcash_database
+      - SECRET_KEY=67!7a9b2@6c5183!a5@c!abf3@426!cb8@!2a
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+
+  db:
+    container_name: db_ngcash
+    image: postgres:latest
+    ports:
+      - 5431:5432
+    environment:
+      - POSTGRES_USER=ngcash
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=ngcash_database
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ngcash -d ngcash_database"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - ngcashtest:/var/lib/postgresql/data
+volumes:
+  ngcashtest:
+    driver: local
