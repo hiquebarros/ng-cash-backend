@@ -20,8 +20,8 @@ class AuthenticationMiddlewares {
               message: "Invalid token",
             });
           }
-          
-          req.body.id = decoded.id
+  
+          req.body.id = decoded.userId
 
           next();
         });
@@ -56,7 +56,8 @@ class AuthenticationMiddlewares {
       const tokenSplit = token.split(" ");
   
       jwt.verify(tokenSplit[1], process.env.SECRET_KEY as string, (error: any, decoded: any) => {
-          if (decoded.id !== userId) {
+          if (decoded.userId !== userId) {
+            
               return res.status(403).json({
                   message: "User do not have permission",
               });

@@ -4,32 +4,108 @@ import { AppError } from "../errors/AppError";
 import { Account } from "../entities/Account";
 import { User } from "../entities/User";
 import { ITransactionRequest } from "../interfaces";
+import { format, parseISO } from "date-fns"
 
 class TransactionService {
     static async listTransactionsService(id: string) {
         const AccountManager = AppDataSource.getRepository(Account)
         const UserManager = AppDataSource.getRepository(User)
+        const TransactionManager = AppDataSource.getRepository(Transaction)
 
         const user = await UserManager.findOne({ where: { id: id }, relations: ["account"] })
 
         const account = await AccountManager.findOne({ where: { id: user?.account.id }, relations: ["debitedTransactions", "creditedTransactions"] })
 
-        const creditedTransactions = account?.creditedTransactions
-        const debitedTransactions = account?.debitedTransactions
+        const transactions = await TransactionManager.find({ relations: ["debitedAccount", "creditedAccount"] })
 
-        if (creditedTransactions && debitedTransactions) {
-            return [...creditedTransactions, ...debitedTransactions].sort((a,b)=>a.createdAt.getTime()+b.createdAt.getTime());
-        } else {
-            if (creditedTransactions) {
-                return [...creditedTransactions].sort((a,b)=>a.createdAt.getTime()+b.createdAt.getTime());
+        const userTransactions = transactions.filter(item => {
+            if (item.debitedAccount.id === account?.id) {
+                return item
             }
-            if (debitedTransactions) {
-                return [...debitedTransactions].sort((a,b)=>a.createdAt.getTime()+b.createdAt.getTime());
+            if (item.creditedAccount.id === account?.id) {
+                return item
             }
-        }
+        })
+
+        return userTransactions
+    }
+
+    static async listCreditedTransactionsService(id: string) {
+        const AccountManager = AppDataSource.getRepository(Account)
+        const UserManager = AppDataSource.getRepository(User)
+        const TransactionManager = AppDataSource.getRepository(Transaction)
+
+        const user = await UserManager.findOne({ where: { id: id }, relations: ["account"] })
+
+        const account = await AccountManager.findOne({ where: { id: user?.account.id }, relations: ["debitedTransactions", "creditedTransactions"] })
+
+        const transactions = await TransactionManager.find({ relations: ["debitedAccount", "creditedAccount"] })
+
+        const userTransactions = transactions.filter(item => {
+
+            if (item.creditedAccount.id === account?.id) {
+                return item
+            }
+        })
+
+        return userTransactions
+    }
+
+    static async listDebitedTransactionsService(id: string) {
+        const AccountManager = AppDataSource.getRepository(Account)
+        const UserManager = AppDataSource.getRepository(User)
+        const TransactionManager = AppDataSource.getRepository(Transaction)
+
+        const user = await UserManager.findOne({ where: { id: id }, relations: ["account"] })
+
+        const account = await AccountManager.findOne({ where: { id: user?.account.id }, relations: ["debitedTransactions", "creditedTransactions"] })
+
+        const transactions = await TransactionManager.find({ relations: ["debitedAccount", "creditedAccount"] })
+
+        const userTransactions = transactions.filter(item => {
+            if (item.debitedAccount.id === account?.id) {
+                return item
+            }
+        })
+
+        return userTransactions
+    }
+
+    static async listTransactionsByDateService(id: string, date: string) {
+
+        const AccountManager = AppDataSource.getRepository(Account)
+        const UserManager = AppDataSource.getRepository(User)
+        const TransactionManager = AppDataSource.getRepository(Transaction)
+
+        const user = await UserManager.findOne({ where: { id: id }, relations: ["account"] })
+
+        const account = await AccountManager.findOne({ where: { id: user?.account.id }, relations: ["debitedTransactions", "creditedTransactions"] })
+
+        const transactions = await TransactionManager.find({ relations: ["debitedAccount", "creditedAccount"] })
+
+        const userTransactions = transactions.filter(item => {
+            if (item.debitedAccount.id === account?.id) {
+                return item
+            }
+            if (item.creditedAccount.id === account?.id) {
+                return item
+            }
+        })
+
+        const formatedPropDate = date.replace("-", "/").replace("-", "/")
+
+        const filteredTransactions = userTransactions.filter(item => {
+            let formateditemDate = (format(new Date(item.createdAt.toString()), 'dd/MM/yyyy'))
+                if(formateditemDate === formatedPropDate){
+                    return item
+                }
+        })
+
+        return filteredTransactions
     }
 
     static async createTransactionService({ value, creditedUserId, debitedUserId }: ITransactionRequest) {
+
         const TransactionManager = AppDataSource.getRepository(Transaction)
         const AccountManager = AppDataSource.getRepository(Account)
         const UserManager = AppDataSource.getRepository(User)

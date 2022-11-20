@@ -8,6 +8,24 @@ class TransactionController {
     return res.status(200).json(Transactions);
   }
 
+  static async listDebitedTransactionController(req: Request, res: Response) {
+    const Transactions = await TransactionService.listDebitedTransactionsService(req.params.id)
+
+    return res.status(200).json(Transactions);
+  }
+
+  static async listCreditedTransactionController(req: Request, res: Response) {
+    const Transactions = await TransactionService.listCreditedTransactionsService(req.params.id)
+
+    return res.status(200).json(Transactions);
+  }
+
+  static async listTransactionByDateController(req: Request, res: Response) {
+    const Transactions = await TransactionService.listTransactionsByDateService(req.params.id, req.params.date)
+
+    return res.status(200).json(Transactions);
+  }
+
   static async createTransactionController(req: Request, res: Response) {
     
     const requestObject = {

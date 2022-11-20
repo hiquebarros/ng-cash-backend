@@ -45,8 +45,8 @@ class UserService {
 
     static async loginUserService(data: IUserRequest) {
         const manager = AppDataSource.getRepository(User)
-        const user = await manager.findOneBy({
-            username: data.username,
+        const user = await manager.findOne({
+            where: {username: data.username}, relations: ['account']
         });
 
         if (!user) {
@@ -64,10 +64,10 @@ class UserService {
 
         const token = jwt.sign(
             {
-                id: user.id,
-                email: user.username,
+                userId: user.id,
+                accountId: user.account.id,
             },
-            process.env.SECRET_KEY as string,
+                process.env.SECRET_KEY as string,
             {
                 expiresIn: "24h",
             }
