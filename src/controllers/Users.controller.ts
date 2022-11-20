@@ -5,7 +5,7 @@ import UserService from "../services/Users.service";
 class UserController {
   static async listUserController(req: Request, res: Response) {
     const users = await UserService.listUsersService()
-    return res.status(200).json({message: "teste"});
+    return res.status(200).json(users);
   }
 
   static async createUserController(req: Request, res: Response) {
