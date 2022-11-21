@@ -13,7 +13,7 @@ export class User {
     readonly id: string;
     @Column("varchar", { length: 50, nullable: false})
     username: string;
-    @Column("varchar", { length: 200, nullable: false })
+    @Column("varchar", { length: 200, nullable: false, select: false })
     password: string;
     @OneToOne(() => Account)
     @JoinColumn()
