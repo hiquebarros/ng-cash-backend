@@ -5,6 +5,7 @@ import * as bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { IUserRequest } from "../interfaces";
 import { Account } from "../entities/Account";
+import { validate } from "class-validator";
 
 class UserService {
     static async listUsersService() {
@@ -30,6 +31,12 @@ class UserService {
 
         const user = UserManager.create(data)
 
+        const errors = await validate(user)
+
+        if (errors.length > 0){
+            throw new AppError('Bad request', 400)
+        }
+
         const AccountManager = AppDataSource.getRepository(Account)
         
         const account = new Account()
@@ -52,6 +59,7 @@ class UserService {
     static async loginUserService(data: IUserRequest) {
         const manager = AppDataSource.getRepository(User)
         const user = await manager.findOne({
+            select: ['id', 'username', 'password', 'account'],
             where: {username: data.username}, relations: ['account']
         });
 
@@ -79,7 +87,7 @@ class UserService {
             }
         );
 
-        return { token };
+        return { token, userId: user.id, accountId: user.account.id};
     }
 
 }
