@@ -40,7 +40,13 @@ class UserService {
 
         await UserManager.save(user)
 
-        return user
+        const userToBeReturned = {
+            id: user.id,
+            username: user.username,
+            account: user.account
+        }
+
+        return userToBeReturned
     }
 
     static async loginUserService(data: IUserRequest) {
