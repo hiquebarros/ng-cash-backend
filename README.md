@@ -1,14 +1,18 @@
-# Como para rodar a aplicação
+#ng-cash Backend
+
+Este projeto pretende seguir as seguintes demandas: Estruturar uma aplicação web fullstack, dockerizada, cujo objetivo seja possibilitar que usuários da NG consigam realizar transferências internas entre si.
+
+## Como rodar a aplicação
 
 Nota: ao clonar este projeto você precisa criar manualmente o arquivo `.env`, conforme explica o tutorial a seguir.
 
-## Ambiente e Ferramentas:
+### Ambiente e Ferramentas:
 
 - Yarn: https://yarnpkg.com/
 - NPM: https://www.npmjs.com/
 - Docker: https://www.docker.com/
 
-## Passo a passo:
+### Passo a passo:
 
 1. No seu terminal, clone a aplicação com o seguinte comando: `git clone git@github.com:hiquebarros/ng-cash-backend.git`
 2. Baixe as dependêncas do projeto utilizando o gerenciador de pacotes que preferir.
