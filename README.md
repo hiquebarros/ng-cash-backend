@@ -1,4 +1,4 @@
-#ng-cash Backend
+# ng-cash Backend
 
 Este projeto pretende seguir as seguintes demandas: Estruturar uma aplicação web fullstack, dockerizada, cujo objetivo seja possibilitar que usuários da NG consigam realizar transferências internas entre si.
 
